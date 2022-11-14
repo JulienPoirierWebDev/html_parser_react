@@ -1,7 +1,14 @@
 import React, {useEffect} from 'react';
 import parser from "@deskeen/markdown"
+import Header2 from "./Header2";
+import Section from "./Section";
+import Header1 from "./Header1";
+import SectionWrapper from "./SectionWrapper";
+import PreviewArea from "./PreviewArea";
 
 const AppWrapper = () => {
+
+    const [html, setHtml] = React.useState("");
 
     const [markdown, setMarkdown] = React.useState(
         "# Welcome to my React Markdown Previewer!" +
@@ -45,35 +52,40 @@ const AppWrapper = () => {
         );
 
     const markdownToHtml = (markdown) => {
-        document.getElementById('preview').innerHTML = parser.parse(markdown).innerHTML;
-
+        setHtml(parser.parse(markdown).innerHTML);
     }
 
     useEffect(() => {
-        let textArea = document.getElementById('editor');
-        textArea.value = markdown;
         markdownToHtml(markdown);
     }
     , []);
 
     return (
         <div className={"p-8"}>
-            <h1 className={"text-4xl text-center text-blue-800"}>Markdown previewer !</h1>
-            <div className={"w-1/2 m-auto py-8 "}>
-                <div>
-                    <h2 className={"text-2xl text-center text-blue-800"}>Editor</h2>
-                    <textarea onKeyUp={(event) => {markdownToHtml(event.target.value)}} name="" id="editor" cols="30" rows="10"
-                              className={"w-full h-full bg-blue-200 p-2 rounded-xl"}></textarea>
-                </div>
-
-                <div className={"my-8"}>
-                    <h2 className={"text-2xl text-center text-blue-800"}>Preview</h2>
-                    <div id={"preview"} className={" bg-red-200 p-2 rounded-xl"}></div>
-
-                </div>
+            <Header1 title={"Markdown Previewer !"}/>
+            <SectionWrapper content={
+                <>
+                    <Section content={
+                        <>
+                            <Header2 title={"Editor"} />
+                            <textarea onKeyUp={(event) => {markdownToHtml(event.target.value)}} name="" id="editor" cols="30" rows="20" value={markdown}
+                                      className={"w-full h-full bg-blue-200 px-2 resize-none"}></textarea>
+                        </>
+                    }/>
 
 
-            </div>
+                    <Section content={
+                        <>
+                            <Header2 title={"Preview"} />
+                            <PreviewArea html={html} />
+                        </>
+                    }/>
+
+
+
+                </>
+            }/>
+
 
         </div>
     );
